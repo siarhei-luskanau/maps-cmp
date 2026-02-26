@@ -7,6 +7,7 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             implementation(projects.core.coreCommon)
+            implementation(projects.core.coreKeyValidationApi)
             implementation(projects.ui.uiCommon)
         }
     }

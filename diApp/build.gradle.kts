@@ -1,17 +1,32 @@
+import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
+
 plugins {
     id("composeMultiplatformConvention")
     alias(libs.plugins.roborazzi)
+    alias(libs.plugins.buildConfig)
 }
 
 kotlin {
     androidLibrary.namespace = "template.di.app"
     sourceSets {
         commonMain.dependencies {
+            implementation(projects.core.coreAddressSearchApi)
+            implementation(projects.core.coreAddressSearchHere)
             implementation(projects.core.coreCommon)
+            implementation(projects.core.coreKeyValidationApi)
+            implementation(projects.core.coreKeyValidationHere)
+            implementation(projects.core.coreLocationApi)
+            implementation(projects.core.coreLocationPlatform)
+            implementation(projects.core.coreMapRouteApi)
+            implementation(projects.core.coreMapRouteHere)
             implementation(projects.core.corePref)
             implementation(projects.navigation)
             implementation(projects.ui.uiCommon)
-            implementation(projects.ui.uiMain)
+            implementation(projects.ui.uiError)
+            implementation(projects.ui.uiMapRoute)
+            implementation(projects.ui.uiMapsViewApi)
+            implementation(projects.ui.uiMapsViewHere)
+            implementation(projects.ui.uiSearch)
             implementation(projects.ui.uiSplash)
         }
 
@@ -41,6 +56,14 @@ kotlin {
             implementation(libs.roborazzi.compose.ios)
         }
     }
+}
+
+buildConfig {
+    packageName(kotlin.androidLibrary.namespace.orEmpty())
+    val hereAccessKeyID = hereAccessKeyID { gradleLocalProperties(rootDir, providers) }
+    val hereAccessKeySecret = hereAccessKeySecret { gradleLocalProperties(rootDir, providers) }
+    buildConfigField("String", "HERE_ACCESS_KEY_ID", "\"$hereAccessKeyID\"")
+    buildConfigField("String", "HERE_ACCESS_KEY_SECRET", "\"$hereAccessKeySecret\"")
 }
 
 // Directory for reference images

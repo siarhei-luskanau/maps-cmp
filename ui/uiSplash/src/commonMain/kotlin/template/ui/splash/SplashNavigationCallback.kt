@@ -1,5 +1,7 @@
 package template.ui.splash
 
 interface SplashNavigationCallback {
-    fun goMainScreen(initArg: String)
+    fun goSearchAddress()
+
+    fun goError(message: String)
 }

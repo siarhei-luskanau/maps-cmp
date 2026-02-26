@@ -1,13 +1,11 @@
 package template.ui.splash
 
 sealed interface SplashViewState {
-    object Loading : SplashViewState
+    data object Loading : SplashViewState
 
-    data class Success(
-        val data: String,
-    ) : SplashViewState
+    data object Valid : SplashViewState
 
-    data class Error(
-        val error: Throwable,
+    data class Invalid(
+        val message: String,
     ) : SplashViewState
 }
