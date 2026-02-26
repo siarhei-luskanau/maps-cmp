@@ -1,15 +1,28 @@
-rootProject.name = "compose-multiplatform-template"
+rootProject.name = "maps-cmp"
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 include(
     ":app:androidApp",
     ":app:desktopApp",
+    ":core:coreAddressSearchApi",
+    ":core:coreAddressSearchHere",
     ":core:coreCommon",
+    ":core:coreKeyValidationApi",
+    ":core:coreKeyValidationHere",
+    ":core:coreLocationApi",
+    ":core:coreLocationPlatform",
+    ":core:coreMapRouteApi",
+    ":core:coreMapRouteHere",
     ":core:corePref",
     ":diApp",
     ":navigation",
     ":ui:uiCommon",
+    ":ui:uiError",
     ":ui:uiMain",
+    ":ui:uiMapRoute",
+    ":ui:uiMapsViewApi",
+    ":ui:uiMapsViewHere",
+    ":ui:uiSearch",
     ":ui:uiSplash",
 )
 

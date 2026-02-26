@@ -10,7 +10,11 @@ import kotlinx.serialization.Serializable
 import org.koin.compose.getKoin
 import org.koin.core.parameter.parametersOf
 import template.ui.common.theme.AppTheme
-import template.ui.main.MainScreen
+import template.ui.error.ErrorScreen
+import template.ui.error.ErrorViewState
+import template.ui.map.route.MapRouteScreen
+import template.ui.maps.view.api.MapsViewProvider
+import template.ui.search.SearchScreen
 import template.ui.splash.SplashScreen
 
 @Preview
@@ -30,21 +34,47 @@ fun NavApp() =
                             koin.get { parametersOf(appNavigation) }
                         }
                     }
-                    entry<AppRoutes.Main> {
-                        MainScreen {
-                            koin.get { parametersOf(it.initArg, appNavigation) }
+                    entry<AppRoutes.Error> { route ->
+                        ErrorScreen(state = ErrorViewState(message = route.message))
+                    }
+                    entry<AppRoutes.SearchAddress> {
+                        SearchScreen {
+                            koin.get { parametersOf(appNavigation) }
                         }
+                    }
+                    entry<AppRoutes.MapRoute> { route ->
+                        MapRouteScreen(
+                            viewModelProvider = {
+                                koin.get {
+                                    parametersOf(
+                                        appNavigation,
+                                        route.departureLat,
+                                        route.departureLon,
+                                        route.destinationLat,
+                                        route.destinationLon,
+                                    )
+                                }
+                            },
+                            mapsViewProvider = koin.get<MapsViewProvider>(),
+                        )
                     }
                 },
         )
     }
 
 internal sealed interface AppRoutes : NavKey {
-    @Serializable
-    data object Splash : AppRoutes
+    @Serializable data object Splash : AppRoutes
 
-    @Serializable
-    data class Main(
-        val initArg: String,
+    @Serializable data class Error(
+        val message: String,
+    ) : AppRoutes
+
+    @Serializable data object SearchAddress : AppRoutes
+
+    @Serializable data class MapRoute(
+        val departureLat: Double?,
+        val departureLon: Double?,
+        val destinationLat: Double,
+        val destinationLon: Double,
     ) : AppRoutes
 }
