@@ -2,16 +2,17 @@
 agp = "9.0.1"
 androidx-activity = "1.12.4"
 androidx-datastore = "1.2.0"
-androidx-uiTest = "1.10.3"
+androidx-uiTest = "1.10.4"
 build-android-compileSdk = "36"
 build-android-minSdk = "30"
 build-android-targetSdk = "36"
-compose-multiplatform = "1.10.1"
+buildConfig = "6.0.7"
+compose-multiplatform = "1.11.0-alpha03"
 detekt = "1.23.8"
 javaVersion = "21"
-jetbrains-compose-material3 = "1.11.0-alpha02"
+jetbrains-compose-material3 = "1.11.0-alpha03"
 jetbrains-lifecycle = "2.10.0-alpha08"
-jetbrains-navigation3 = "1.1.0-alpha02"
+jetbrains-navigation3 = "1.1.0-alpha03"
 jetbrains-savedstate = "1.4.0"
 jetbrains-window = "1.5.1"
 koin-bom = "4.2.0-RC1"
@@ -63,6 +64,7 @@ roborazzi-compose-ios = { module = "io.github.takahirom.roborazzi:roborazzi-comp
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
+buildConfig = { id = "com.github.gmazzo.buildconfig", version.ref = "buildConfig" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 compose-multiplatform = { id = "org.jetbrains.compose", version.ref = "compose-multiplatform" }
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
