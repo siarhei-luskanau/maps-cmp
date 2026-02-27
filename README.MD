@@ -1,5 +1,10 @@
 # compose-multiplatform-template
 
+### Set your HERE SDK credentials
+Add the following lines to `local.properties` file:
+`hereAccessKeyID=...
+hereAccessKeySecret=...`
+
 ### Android
 To run the application on android device/emulator:
 - open project in Android Studio and run imported android run configuration
@@ -18,6 +23,7 @@ Run desktop UI tests: `./gradlew jvmTest`
 To run the application on iPhone device/simulator:
 - Open `iosApp/iosApp.xcproject` in Xcode and run standard configuration
 - Or use [Kotlin Multiplatform Mobile plugin](https://plugins.jetbrains.com/plugin/14936-kotlin-multiplatform-mobile) for Android Studio
+- Build iOS app: `./gradlew ciIos`
 - Run iOS simulator UI tests: `./gradlew iosSimulatorArm64Test`
 
 ### Code style and linting
@@ -25,4 +31,4 @@ To run the application on iPhone device/simulator:
 - launch ktlint, detekt and lint checks: `./gradlew ktlintCheck detekt lint`
 
 ### Screenshot Testing
-Record a screenshot: `./gradlew recordRoborazzi`
+Record a screenshot: `./gradlew recordRoborazzi -DIS_DATA_STUB_ENABLED=true`

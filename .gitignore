@@ -18,3 +18,5 @@ Pods/
 /app/iosApp/iosApp.xcodeproj/project.xcworkspace/xcshareddata/IDEWorkspaceChecks.plist
 /app/iosApp/Podfile.lock
 /composeApp/composeApp.podspec
+/libs/heresdk-explore-android/
+/libs/heresdk-explore-ios/
