@@ -11,7 +11,7 @@ import template.ui.maps.view.api.MapsConfig
 import template.ui.maps.view.api.MapsViewProvider
 
 @Factory
-class HereMapsViewProvider : MapsViewProvider {
+internal class HereMapsViewProviderJvm : MapsViewProvider {
     @Composable
     override fun MapsView(
         config: MapsConfig,

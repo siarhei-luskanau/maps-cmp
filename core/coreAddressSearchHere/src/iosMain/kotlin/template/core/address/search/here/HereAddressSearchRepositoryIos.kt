@@ -5,6 +5,6 @@ import template.core.address.search.api.AddressItem
 import template.core.address.search.api.AddressSearchRepository
 
 @Factory
-class HereAddressSearchRepository : AddressSearchRepository {
+internal class HereAddressSearchRepositoryIos : AddressSearchRepository {
     override suspend fun search(query: String): List<AddressItem> = emptyList()
 }

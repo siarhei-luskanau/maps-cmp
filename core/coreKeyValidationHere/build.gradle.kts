@@ -8,5 +8,10 @@ kotlin {
             implementation(projects.core.coreHereSdk)
             implementation(projects.core.coreKeyValidationApi)
         }
+        androidMain.dependencies {
+            implementation(
+                files("${rootProject.projectDir}/libs/heresdk-explore-android/heresdk-explore-android.aar"),
+            )
+        }
     }
 }

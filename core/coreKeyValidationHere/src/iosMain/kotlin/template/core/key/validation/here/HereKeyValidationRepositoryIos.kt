@@ -5,6 +5,6 @@ import template.core.key.validation.api.KeyValidationRepository
 import template.core.key.validation.api.KeyValidationResult
 
 @Factory
-class HereKeyValidationRepository : KeyValidationRepository {
+internal class HereKeyValidationRepositoryIos : KeyValidationRepository {
     override suspend fun validateCredentials(): KeyValidationResult = KeyValidationResult.Valid
 }

@@ -60,6 +60,9 @@ kotlin {
 
 buildConfig {
     packageName(kotlin.androidLibrary.namespace.orEmpty())
+    useKotlinOutput {
+        internalVisibility = false
+    }
     val hereAccessKeyID = hereAccessKeyID { gradleLocalProperties(rootDir, providers) }
     val hereAccessKeySecret = hereAccessKeySecret { gradleLocalProperties(rootDir, providers) }
     buildConfigField("String", "HERE_ACCESS_KEY_ID", "\"$hereAccessKeyID\"")
