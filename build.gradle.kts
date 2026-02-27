@@ -2,6 +2,8 @@ import groovy.json.JsonSlurper
 import org.apache.tools.ant.taskdefs.condition.Os
 import java.io.ByteArrayOutputStream
 
+splitHereLibs(rootProject = rootProject)
+joinHereLibParts(rootProject = rootProject)
 checkAndExtractHereLibs(rootProject = rootProject)
 
 plugins {

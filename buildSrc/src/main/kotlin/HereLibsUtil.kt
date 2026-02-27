@@ -1,10 +1,50 @@
 import org.gradle.api.Project
 
-fun checkAndExtractHereLibs(rootProject: Project) {
-    val sdkVersion = "4.25.3.0.264438"
+const val SDK_VERSION = "4.25.3.0.264438"
 
+fun splitHereLibs(rootProject: Project) {
+    val partSize = 49 * 1024 * 1024L
+    listOf("android", "ios").forEach { platform ->
+        val zip = rootProject.file("libs/heresdk-explore-$platform-$SDK_VERSION.zip")
+        if (!zip.exists()) return@forEach
+        val partOne = rootProject.file("libs/heresdk-explore-$platform-$SDK_VERSION.001")
+        if (partOne.exists()) return@forEach
+        println("Splitting $zip into parts of ${partSize / 1024 / 1024} MB")
+        var partCount = 0
+        zip.inputStream().buffered().use { input ->
+            val buffer = ByteArray(partSize.toInt())
+            var bytesRead: Int
+            while (input.read(buffer).also { bytesRead = it } > 0) {
+                val partFile = rootProject.file("libs/heresdk-explore-$platform-$SDK_VERSION.%03d".format(++partCount))
+                partFile.writeBytes(if (bytesRead == buffer.size) buffer else buffer.copyOf(bytesRead))
+            }
+        }
+        println("Split complete: $partCount parts created for $platform SDK")
+    }
+}
+
+fun joinHereLibParts(rootProject: Project) {
+    listOf("android", "ios").forEach { platform ->
+        val partOne = rootProject.file("libs/heresdk-explore-$platform-$SDK_VERSION.001")
+        if (!partOne.exists()) return@forEach
+        val zip = rootProject.file("libs/heresdk-explore-$platform-$SDK_VERSION.zip")
+        if (zip.exists()) return@forEach
+        println("Joining parts into $zip")
+        var partIndex = 1
+        zip.outputStream().buffered().use { output ->
+            while (true) {
+                val partFile = rootProject.file("libs/heresdk-explore-$platform-$SDK_VERSION.%03d".format(partIndex++))
+                if (!partFile.exists()) break
+                partFile.inputStream().use { it.copyTo(output) }
+            }
+        }
+        println("Join complete: ${partIndex - 1} parts merged for $platform SDK")
+    }
+}
+
+fun checkAndExtractHereLibs(rootProject: Project) {
     val androidSdkDir = rootProject.file("libs/heresdk-explore-android")
-    val androidSdkZip = rootProject.file("libs/heresdk-explore-android-$sdkVersion.zip")
+    val androidSdkZip = rootProject.file("libs/heresdk-explore-android-$SDK_VERSION.zip")
     if (!androidSdkDir.exists() && androidSdkZip.exists()) {
         println("Extracting $androidSdkZip to $androidSdkDir")
         rootProject.copy {
@@ -14,7 +54,7 @@ fun checkAndExtractHereLibs(rootProject: Project) {
 
         val androidAarSrc =
             rootProject.file(
-                "libs/heresdk-explore-android/heresdk-explore-android-$sdkVersion/heresdk-explore-android-$sdkVersion.aar",
+                "libs/heresdk-explore-android/heresdk-explore-android-$SDK_VERSION/heresdk-explore-android-$SDK_VERSION.aar",
             )
         if (androidAarSrc.exists()) {
             println("Copying $androidAarSrc to $androidSdkDir/heresdk-explore-android.aar")
@@ -27,7 +67,7 @@ fun checkAndExtractHereLibs(rootProject: Project) {
 
         val androidMockJarSrc =
             rootProject.file(
-                "libs/heresdk-explore-android/heresdk-explore-android-$sdkVersion/heresdk-explore-mock-$sdkVersion.jar",
+                "libs/heresdk-explore-android/heresdk-explore-android-$SDK_VERSION/heresdk-explore-mock-$SDK_VERSION.jar",
             )
         if (androidMockJarSrc.exists()) {
             println("Copying $androidMockJarSrc to $androidSdkDir/heresdk-explore-mock.jar")
@@ -40,7 +80,7 @@ fun checkAndExtractHereLibs(rootProject: Project) {
     }
 
     val iosSdkDir = rootProject.file("libs/heresdk-explore-ios")
-    val iosSdkZip = rootProject.file("libs/heresdk-explore-ios-$sdkVersion.zip")
+    val iosSdkZip = rootProject.file("libs/heresdk-explore-ios-$SDK_VERSION.zip")
     if (!iosSdkDir.exists() && iosSdkZip.exists()) {
         println("Extracting $iosSdkZip to $iosSdkDir")
         rootProject.copy {
@@ -50,8 +90,8 @@ fun checkAndExtractHereLibs(rootProject: Project) {
 
         val iosTarGz =
             rootProject.file(
-                "libs/heresdk-explore-ios/heresdk-explore-ios-$sdkVersion/" +
-                    "heresdk-explore-ios-$sdkVersion.tar.gz",
+                "libs/heresdk-explore-ios/heresdk-explore-ios-$SDK_VERSION/" +
+                    "heresdk-explore-ios-$SDK_VERSION.tar.gz",
             )
         val iosInternalDir = rootProject.file("libs/heresdk-explore-ios/heresdk-explore-ios-temp")
         if (!iosInternalDir.exists() && iosTarGz.exists()) {

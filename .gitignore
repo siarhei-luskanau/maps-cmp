@@ -20,3 +20,5 @@ Pods/
 /composeApp/composeApp.podspec
 /libs/heresdk-explore-android/
 /libs/heresdk-explore-ios/
+/libs/heresdk-explore-android-*.zip
+/libs/heresdk-explore-ios-*.zip
