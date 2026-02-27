@@ -6,7 +6,7 @@ import template.core.map.route.api.MapRouteRepository
 import template.core.map.route.api.Route
 
 @Factory
-class HereMapRouteRepository : MapRouteRepository {
+internal class HereMapRouteRepositoryIos : MapRouteRepository {
     override suspend fun getCarRoute(
         from: Location,
         to: Location,
