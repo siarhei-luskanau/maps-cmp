@@ -2,6 +2,8 @@ import groovy.json.JsonSlurper
 import org.apache.tools.ant.taskdefs.condition.Os
 import java.io.ByteArrayOutputStream
 
+checkAndExtractHereLibs(rootProject = rootProject)
+
 plugins {
     alias(libs.plugins.android.application).apply(false)
     alias(libs.plugins.compose.compiler).apply(false)
@@ -49,8 +51,8 @@ tasks.register("ciIos") {
     val injected = project.objects.newInstance<Injected>()
     doLast {
         if (Os.isFamily(Os.FAMILY_MAC)) {
-            injected.runExec(listOf("brew", "install", "kdoctor"))
-            injected.runExec(listOf("kdoctor"))
+            // injected.runExec(listOf("brew", "install", "kdoctor"))
+            // injected.runExec(listOf("kdoctor"))
             val devicesJson =
                 injected.runExec(
                     listOf(

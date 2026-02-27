@@ -14,7 +14,6 @@ kotlin {
             implementation(projects.core.coreAddressSearchHere)
             implementation(projects.core.coreCommon)
             implementation(projects.core.coreKeyValidationApi)
-            implementation(projects.core.coreKeyValidationHere)
             implementation(projects.core.coreLocationApi)
             implementation(projects.core.coreLocationPlatform)
             implementation(projects.core.coreMapRouteApi)
@@ -28,6 +27,11 @@ kotlin {
             implementation(projects.ui.uiMapsViewHere)
             implementation(projects.ui.uiSearch)
             implementation(projects.ui.uiSplash)
+            if (isDataStubEnabled { gradleLocalProperties(rootDir, providers) }) {
+                implementation(projects.core.coreKeyValidationStub)
+            } else {
+                implementation(projects.core.coreKeyValidationHere)
+            }
         }
 
         jvmMain.dependencies {
