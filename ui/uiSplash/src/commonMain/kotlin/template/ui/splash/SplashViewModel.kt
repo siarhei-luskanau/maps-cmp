@@ -7,14 +7,12 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import org.koin.core.annotation.Factory
 import org.koin.core.annotation.InjectedParam
-import template.core.key.validation.api.HereCredentials
 import template.core.key.validation.api.KeyValidationRepository
 import template.core.key.validation.api.KeyValidationResult
 
 @Factory
 class SplashViewModel(
     @InjectedParam private val navigationCallback: SplashNavigationCallback,
-    private val credentials: HereCredentials,
     private val keyValidationRepository: KeyValidationRepository,
 ) : ViewModel() {
     val viewState: StateFlow<SplashViewState>
@@ -29,7 +27,7 @@ class SplashViewModel(
     private fun validate() {
         viewModelScope.launch {
             viewState.value = SplashViewState.Loading
-            when (val result = keyValidationRepository.validateCredentials(credentials)) {
+            when (val result = keyValidationRepository.validateCredentials()) {
                 KeyValidationResult.Valid -> {
                     viewState.value = SplashViewState.Valid
                     navigationCallback.goSearchAddress()
