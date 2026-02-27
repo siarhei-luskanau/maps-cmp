@@ -20,7 +20,6 @@ include(
     ":navigation",
     ":ui:uiCommon",
     ":ui:uiError",
-    ":ui:uiMain",
     ":ui:uiMapRoute",
     ":ui:uiMapsViewApi",
     ":ui:uiMapsViewHere",
