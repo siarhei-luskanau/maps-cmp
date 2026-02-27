@@ -3,7 +3,6 @@ import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
 plugins {
     id("composeMultiplatformConvention")
     alias(libs.plugins.roborazzi)
-    alias(libs.plugins.buildConfig)
 }
 
 kotlin {
@@ -60,14 +59,6 @@ kotlin {
             implementation(libs.roborazzi.compose.ios)
         }
     }
-}
-
-buildConfig {
-    packageName(kotlin.androidLibrary.namespace.orEmpty())
-    val hereAccessKeyID = hereAccessKeyID { gradleLocalProperties(rootDir, providers) }
-    val hereAccessKeySecret = hereAccessKeySecret { gradleLocalProperties(rootDir, providers) }
-    buildConfigField("String", "HERE_ACCESS_KEY_ID", "\"$hereAccessKeyID\"")
-    buildConfigField("String", "HERE_ACCESS_KEY_SECRET", "\"$hereAccessKeySecret\"")
 }
 
 // Directory for reference images

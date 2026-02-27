@@ -1,5 +1,8 @@
+import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
+
 plugins {
     id("composeMultiplatformConvention")
+    alias(libs.plugins.buildConfig)
 }
 
 kotlin {
@@ -53,4 +56,12 @@ kotlin {
             )
         }
     }
+}
+
+buildConfig {
+    packageName(kotlin.androidLibrary.namespace.orEmpty())
+    val hereAccessKeyID = hereAccessKeyID { gradleLocalProperties(rootDir, providers) }
+    val hereAccessKeySecret = hereAccessKeySecret { gradleLocalProperties(rootDir, providers) }
+    buildConfigField("String", "HERE_ACCESS_KEY_ID", "\"$hereAccessKeyID\"")
+    buildConfigField("String", "HERE_ACCESS_KEY_SECRET", "\"$hereAccessKeySecret\"")
 }
