@@ -3,11 +3,16 @@ package template.ui.maps.view.here
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Paint
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
@@ -27,6 +32,12 @@ import com.here.sdk.mapview.MapPolyline
 import com.here.sdk.mapview.MapScheme
 import com.here.sdk.mapview.MapView
 import com.here.sdk.mapview.RenderSize
+import com.here.sdk.units.compass.CompassUnit
+import com.here.sdk.units.compass.CompassView
+import com.here.sdk.units.mapruler.MapScaleUnit
+import com.here.sdk.units.mapruler.MapScaleView
+import com.here.sdk.units.mapswitcher.MapSwitcherUnit
+import com.here.sdk.units.mapswitcher.MapSwitcherView
 import org.koin.core.annotation.Factory
 import template.core.heresdk.BuildConfig
 import template.ui.maps.view.api.MapsConfig
@@ -39,9 +50,44 @@ internal class HereMapsViewProviderAndroid : MapsViewProvider {
         config: MapsConfig,
         modifier: Modifier,
     ) {
-        val context = LocalContext.current
-        val mapView =
-            remember {
+        val mapSwitcherUnit = remember { MapSwitcherUnit() }
+        val compassUnit = remember { CompassUnit() }
+        val mapScaleUnit = remember { MapScaleUnit() }
+        Box(modifier = modifier) {
+            HereMapView(config, mapSwitcherUnit, compassUnit, mapScaleUnit)
+            MapOverlayLayout(mapSwitcherUnit, compassUnit, mapScaleUnit)
+        }
+    }
+
+    @Composable
+    private fun HereMapView(
+        config: MapsConfig,
+        mapSwitcherUnit: MapSwitcherUnit,
+        compassUnit: CompassUnit,
+        mapScaleUnit: MapScaleUnit,
+    ) {
+        var mapView: MapView? = remember { null }
+        val lifecycle = (LocalContext.current as LifecycleOwner).lifecycle
+        DisposableEffect(lifecycle) {
+            val observer =
+                object : DefaultLifecycleObserver {
+                    override fun onResume(owner: LifecycleOwner) {
+                        mapView?.onResume()
+                    }
+
+                    override fun onPause(owner: LifecycleOwner) {
+                        mapView?.onPause()
+                    }
+
+                    override fun onDestroy(owner: LifecycleOwner) {
+                        mapView?.onDestroy()
+                    }
+                }
+            lifecycle.addObserver(observer)
+            onDispose { lifecycle.removeObserver(observer) }
+        }
+        AndroidView(
+            factory = { context ->
                 if (SDKNativeEngine.getSharedInstance() == null) {
                     SDKNativeEngine.makeSharedInstance(
                         context,
@@ -53,30 +99,17 @@ internal class HereMapsViewProviderAndroid : MapsViewProvider {
                         ),
                     )
                 }
-                MapView(context).also { it.onCreate(null) }
-            }
-        val lifecycle = (LocalContext.current as LifecycleOwner).lifecycle
-        DisposableEffect(lifecycle) {
-            val observer =
-                object : DefaultLifecycleObserver {
-                    override fun onResume(owner: LifecycleOwner) {
-                        mapView.onResume()
+                mapView =
+                    MapView(context).also {
+                        it.onCreate(null)
+                        mapSwitcherUnit.setUp(it)
+                        compassUnit.setUp(it)
+                        mapScaleUnit.setUp(it)
                     }
-
-                    override fun onPause(owner: LifecycleOwner) {
-                        mapView.onPause()
-                    }
-
-                    override fun onDestroy(owner: LifecycleOwner) {
-                        mapView.onDestroy()
-                    }
-                }
-            lifecycle.addObserver(observer)
-            onDispose { lifecycle.removeObserver(observer) }
-        }
-        AndroidView(
-            factory = {
                 mapView.setOnReadyListener {
+                    mapSwitcherUnit.setUp(mapView)
+                    compassUnit.setUp(mapView)
+                    mapScaleUnit.setUp(mapView)
                     mapView.mapScene.loadScene(MapScheme.NORMAL_DAY) { mapError ->
                         if (mapError != null) return@loadScene
                         mapView.camera.lookAt(
@@ -98,8 +131,30 @@ internal class HereMapsViewProviderAndroid : MapsViewProvider {
                 }
                 mapView
             },
-            modifier = modifier,
+            modifier = Modifier.fillMaxSize(),
         )
+    }
+
+    @Composable
+    private fun MapOverlayLayout(
+        mapSwitcherUnit: MapSwitcherUnit,
+        compassUnit: CompassUnit,
+        mapScaleUnit: MapScaleUnit,
+    ) {
+        Box(modifier = Modifier.fillMaxSize()) {
+            MapScaleView(
+                unit = mapScaleUnit,
+                modifier = Modifier.align(Alignment.TopStart).padding(16.dp),
+            )
+            CompassView(
+                unit = compassUnit,
+                modifier = Modifier.align(Alignment.TopEnd).padding(16.dp),
+            )
+            MapSwitcherView(
+                unit = mapSwitcherUnit,
+                modifier = Modifier.align(Alignment.BottomStart).padding(16.dp),
+            )
+        }
     }
 
     private fun showRoutePolyline(
