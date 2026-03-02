@@ -14,20 +14,17 @@ import org.koin.core.annotation.Factory
 import org.koin.core.annotation.InjectedParam
 import template.core.address.search.api.AddressItem
 import template.core.address.search.api.AddressSearchRepository
-import template.core.location.api.LocationPermissionResult
-import template.core.location.api.LocationRepository
+import template.core.common.CoreResult
 
 @Factory
 class SearchViewModel(
     @InjectedParam private val navigationCallback: SearchNavigationCallback,
     private val addressSearchRepository: AddressSearchRepository,
-    private val locationRepository: LocationRepository,
 ) : ViewModel() {
     val viewState: StateFlow<SearchViewState>
         field = MutableStateFlow(SearchViewState())
 
     init {
-        requestLocationPermission()
         observeQueryChanges()
     }
 
@@ -50,22 +47,6 @@ class SearchViewModel(
         }
     }
 
-    private fun requestLocationPermission() {
-        viewModelScope.launch {
-            val result = locationRepository.requestPermission()
-            val mode =
-                when (result) {
-                    LocationPermissionResult.Granted -> DepartureMode.CurrentLocation
-
-                    LocationPermissionResult.Denied,
-                    LocationPermissionResult.PermanentlyDenied,
-                    -> DepartureMode.ManualEntry
-                }
-            val activeField = if (mode == DepartureMode.CurrentLocation) SearchField.Destination else SearchField.Departure
-            viewState.value = viewState.value.copy(departureMode = mode, activeField = activeField)
-        }
-    }
-
     @OptIn(FlowPreview::class)
     private fun observeQueryChanges() {
         viewModelScope.launch {
@@ -84,12 +65,10 @@ class SearchViewModel(
                         return@collect
                     }
                     viewState.value = viewState.value.copy(isLoading = true, error = null)
-                    runCatching { addressSearchRepository.search(query) }
-                        .onSuccess { results ->
-                            viewState.value = viewState.value.copy(results = results, isLoading = false)
-                        }.onFailure { error ->
-                            viewState.value = viewState.value.copy(error = error.message, isLoading = false)
-                        }
+                    when (val result = addressSearchRepository.search(query)) {
+                        is CoreResult.Success -> viewState.value = viewState.value.copy(results = result.result, isLoading = false)
+                        is CoreResult.Failure -> viewState.value = viewState.value.copy(error = result.error.message, isLoading = false)
+                    }
                 }
         }
     }
@@ -117,8 +96,7 @@ class SearchViewModel(
                         results = emptyList(),
                     )
                 val departure = viewState.value.departureSelection
-                val isDepartureResolved = viewState.value.departureMode == DepartureMode.CurrentLocation || departure != null
-                if (isDepartureResolved) {
+                if (departure != null) {
                     navigationCallback.goMapRoute(departure = departure, destination = item)
                 }
             }

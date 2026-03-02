@@ -6,15 +6,15 @@ import com.here.sdk.core.engine.SDKNativeEngine
 import com.here.sdk.core.engine.SDKOptions
 import com.here.sdk.core.errors.InstantiationErrorException
 import org.koin.core.annotation.Factory
+import template.core.common.CoreResult
 import template.core.heresdk.BuildConfig
 import template.core.key.validation.api.KeyValidationRepository
-import template.core.key.validation.api.KeyValidationResult
 
 @Factory
 internal class HereKeyValidationRepositoryAndroid(
     private val context: Context,
 ) : KeyValidationRepository {
-    override suspend fun validateCredentials(): KeyValidationResult =
+    override suspend fun validateCredentials(): CoreResult<Unit> =
         try {
             if (SDKNativeEngine.getSharedInstance() == null) {
                 SDKNativeEngine.makeSharedInstance(
@@ -27,8 +27,8 @@ internal class HereKeyValidationRepositoryAndroid(
                     ),
                 )
             }
-            KeyValidationResult.Valid
+            CoreResult.Success(Unit)
         } catch (e: InstantiationErrorException) {
-            KeyValidationResult.Invalid(e.error.name)
+            CoreResult.Failure(Exception(e.error.name))
         }
 }

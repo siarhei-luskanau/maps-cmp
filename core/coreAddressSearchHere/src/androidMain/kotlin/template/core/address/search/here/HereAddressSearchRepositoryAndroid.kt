@@ -12,6 +12,7 @@ import kotlinx.coroutines.suspendCancellableCoroutine
 import org.koin.core.annotation.Factory
 import template.core.address.search.api.AddressItem
 import template.core.address.search.api.AddressSearchRepository
+import template.core.common.CoreResult
 import template.core.heresdk.BuildConfig
 import kotlin.coroutines.resume
 
@@ -19,7 +20,7 @@ import kotlin.coroutines.resume
 internal class HereAddressSearchRepositoryAndroid(
     private val context: Context,
 ) : AddressSearchRepository {
-    override suspend fun search(query: String): List<AddressItem> =
+    override suspend fun search(query: String): CoreResult<List<AddressItem>> =
         suspendCancellableCoroutine { cont ->
             if (SDKNativeEngine.getSharedInstance() == null) {
                 SDKNativeEngine.makeSharedInstance(
@@ -36,28 +37,34 @@ internal class HereAddressSearchRepositoryAndroid(
                 try {
                     SearchEngine()
                 } catch (e: InstantiationErrorException) {
-                    cont.resume(emptyList())
+                    cont.resume(CoreResult.Success(emptyList()))
                     return@suspendCancellableCoroutine
                 }
             searchEngine.searchByAddress(
                 AddressQuery(query),
                 SearchOptions().apply { maxItems = 20 },
             ) { searchError, places ->
-                if (searchError != null || places.isNullOrEmpty()) {
-                    cont.resume(emptyList())
-                    return@searchByAddress
-                }
-                cont.resume(
-                    places.mapNotNull { place ->
-                        val coords = place.geoCoordinates ?: return@mapNotNull null
-                        AddressItem(
-                            id = place.id,
-                            label = place.address.addressText.ifBlank { place.title },
-                            lat = coords.latitude,
-                            lon = coords.longitude,
+                when {
+                    searchError != null -> {
+                        cont.resume(CoreResult.Failure(Error(searchError.name)))
+                    }
+
+                    else -> {
+                        cont.resume(
+                            CoreResult.Success(
+                                places.orEmpty().mapNotNull { place ->
+                                    val coords = place.geoCoordinates ?: return@mapNotNull null
+                                    AddressItem(
+                                        id = place.id,
+                                        label = place.address.addressText.ifBlank { place.title },
+                                        lat = coords.latitude,
+                                        lon = coords.longitude,
+                                    )
+                                },
+                            ),
                         )
-                    },
-                )
+                    }
+                }
             }
         }
 }

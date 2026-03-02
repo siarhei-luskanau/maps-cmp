@@ -7,10 +7,9 @@ kotlin {
     androidLibrary.namespace = "template.ui.search"
     sourceSets {
         commonMain.dependencies {
-            implementation(projects.ui.uiCommon)
             implementation(projects.core.coreAddressSearchApi)
-            implementation(projects.core.coreLocationApi)
-            implementation(projects.core.coreMapRouteApi)
+            implementation(projects.core.coreCommon)
+            implementation(projects.ui.uiCommon)
         }
         androidHostTest.dependencies {
             implementation(libs.robolectric)

@@ -4,6 +4,8 @@ plugins {
 kotlin {
     androidLibrary.namespace = "template.core.key.validation.api"
     sourceSets {
-        commonMain.dependencies {}
+        commonMain.dependencies {
+            implementation(projects.core.coreCommon)
+        }
     }
 }

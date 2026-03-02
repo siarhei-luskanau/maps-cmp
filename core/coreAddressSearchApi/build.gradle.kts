@@ -4,6 +4,8 @@ plugins {
 kotlin {
     androidLibrary.namespace = "template.core.address.search.api"
     sourceSets {
-        commonMain.dependencies {}
+        commonMain.dependencies {
+            implementation(projects.core.coreCommon)
+        }
     }
 }

@@ -11,8 +11,9 @@ import com.here.sdk.routing.RoutingEngine
 import com.here.sdk.routing.Waypoint
 import kotlinx.coroutines.suspendCancellableCoroutine
 import org.koin.core.annotation.Factory
+import template.core.common.CoreResult
+import template.core.common.Location
 import template.core.heresdk.BuildConfig
-import template.core.map.route.api.Location
 import template.core.map.route.api.MapRouteRepository
 import template.core.map.route.api.Route
 import kotlin.coroutines.resume
@@ -24,45 +25,49 @@ internal class HereMapRouteRepositoryAndroid(
     override suspend fun getCarRoute(
         from: Location,
         to: Location,
-    ): Route =
+    ): CoreResult<Route> =
         suspendCancellableCoroutine { cont ->
-            if (SDKNativeEngine.getSharedInstance() == null) {
-                SDKNativeEngine.makeSharedInstance(
-                    context,
-                    SDKOptions(
-                        AuthenticationMode.withKeySecret(
-                            BuildConfig.HERE_ACCESS_KEY_ID,
-                            BuildConfig.HERE_ACCESS_KEY_SECRET,
+            try {
+                if (SDKNativeEngine.getSharedInstance() == null) {
+                    SDKNativeEngine.makeSharedInstance(
+                        context,
+                        SDKOptions(
+                            AuthenticationMode.withKeySecret(
+                                BuildConfig.HERE_ACCESS_KEY_ID,
+                                BuildConfig.HERE_ACCESS_KEY_SECRET,
+                            ),
                         ),
-                    ),
-                )
-            }
-            val routingEngine =
-                try {
-                    RoutingEngine()
-                } catch (e: InstantiationErrorException) {
-                    cont.resume(Route(emptyList(), 0L, 0L))
-                    return@suspendCancellableCoroutine
+                    )
                 }
-            routingEngine.calculateRoute(
-                listOf(
-                    Waypoint(GeoCoordinates(from.lat, from.lon)),
-                    Waypoint(GeoCoordinates(to.lat, to.lon)),
-                ),
-                CarOptions(),
-            ) { routingError, routes ->
-                if (routingError != null || routes.isNullOrEmpty()) {
-                    cont.resume(Route(emptyList(), 0L, 0L))
-                    return@calculateRoute
-                }
-                val hereRoute = routes.first()
-                cont.resume(
-                    Route(
-                        polyline = hereRoute.geometry.vertices.map { Location(it.latitude, it.longitude) },
-                        durationSeconds = hereRoute.duration.seconds,
-                        distanceMeters = hereRoute.lengthInMeters.toLong(),
+                val routingEngine = RoutingEngine()
+                routingEngine.calculateRoute(
+                    listOf(
+                        Waypoint(GeoCoordinates(from.lat, from.lon)),
+                        Waypoint(GeoCoordinates(to.lat, to.lon)),
                     ),
-                )
+                    CarOptions(),
+                ) { routingError, routes ->
+                    when {
+                        routingError != null -> {
+                            cont.resume(CoreResult.Failure(Error(routingError.name)))
+                        }
+
+                        else -> {
+                            val hereRoute = routes.orEmpty().first()
+                            cont.resume(
+                                CoreResult.Success(
+                                    Route(
+                                        polyline = hereRoute.geometry.vertices.map { Location(it.latitude, it.longitude) },
+                                        durationSeconds = hereRoute.duration.seconds,
+                                        distanceMeters = hereRoute.lengthInMeters.toLong(),
+                                    ),
+                                ),
+                            )
+                        }
+                    }
+                }
+            } catch (e: InstantiationErrorException) {
+                cont.resume(CoreResult.Failure(e))
             }
         }
 }

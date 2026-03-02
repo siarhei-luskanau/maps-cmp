@@ -7,6 +7,7 @@ kotlin {
     androidLibrary.namespace = "template.ui.map.route"
     sourceSets {
         commonMain.dependencies {
+            implementation(projects.core.coreCommon)
             implementation(projects.core.coreLocationApi)
             implementation(projects.core.coreMapRouteApi)
             implementation(projects.ui.uiCommon)

@@ -3,9 +3,9 @@ package template.core.location.platform
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import org.koin.core.annotation.Factory
+import template.core.common.Location
 import template.core.location.api.LocationPermissionResult
 import template.core.location.api.LocationRepository
-import template.core.map.route.api.Location
 
 @Factory
 class NativeLocationRepository : LocationRepository {
