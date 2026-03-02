@@ -1,4 +1,6 @@
 import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
+import org.jetbrains.kotlin.gradle.plugin.mpp.Framework
+import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 
 plugins {
     id("composeMultiplatformConvention")
@@ -7,6 +9,16 @@ plugins {
 
 kotlin {
     androidLibrary.namespace = "template.di.app"
+
+    targets
+        .withType<KotlinNativeTarget>()
+        .matching { it.konanTarget.family.isAppleFamily }
+        .configureEach {
+            binaries.withType<Framework>().configureEach {
+                export(projects.core.coreHereSdk)
+            }
+        }
+
     sourceSets {
         commonMain.dependencies {
             implementation(projects.core.coreAddressSearchApi)
@@ -52,6 +64,7 @@ kotlin {
         }
 
         iosMain.dependencies {
+            api(projects.core.coreHereSdk)
             implementation(libs.androidx.datastore.core.okio)
         }
 

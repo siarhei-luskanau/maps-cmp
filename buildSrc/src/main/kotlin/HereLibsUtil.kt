@@ -139,5 +139,18 @@ fun checkAndExtractHereLibs(rootProject: Project) {
                 into(iosXcframworkDest)
             }
         }
+
+        val iosExamplesZipSrc =
+            rootProject.file(
+                "libs/heresdk-explore-ios/heresdk-explore-ios-$SDK_VERSION/" +
+                    "heresdk-explore-ios-examples-${SDK_VERSION.substringBeforeLast(".")}.zip",
+            )
+        if (iosExamplesZipSrc.exists()) {
+            println("Extracting $iosExamplesZipSrc to ${iosExamplesZipSrc.parentFile}")
+            rootProject.copy {
+                from(rootProject.zipTree(iosExamplesZipSrc))
+                into(iosExamplesZipSrc.path.removeSuffix(".zip"))
+            }
+        }
     }
 }
