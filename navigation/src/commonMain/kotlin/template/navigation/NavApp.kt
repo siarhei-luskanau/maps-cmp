@@ -72,8 +72,8 @@ internal sealed interface AppRoutes : NavKey {
     @Serializable data object SearchAddress : AppRoutes
 
     @Serializable data class MapRoute(
-        val departureLat: Double?,
-        val departureLon: Double?,
+        val departureLat: Double,
+        val departureLon: Double,
         val destinationLat: Double,
         val destinationLon: Double,
     ) : AppRoutes

@@ -5,8 +5,9 @@ kotlin {
     androidLibrary.namespace = "template.core.address.search.here"
     sourceSets {
         commonMain.dependencies {
-            implementation(projects.core.coreHereSdk)
             implementation(projects.core.coreAddressSearchApi)
+            implementation(projects.core.coreCommon)
+            implementation(projects.core.coreHereSdk)
         }
         androidMain.dependencies {
             implementation(

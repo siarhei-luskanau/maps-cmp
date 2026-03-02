@@ -4,7 +4,7 @@ import template.core.address.search.api.AddressItem
 
 interface SearchNavigationCallback {
     fun goMapRoute(
-        departure: AddressItem?,
+        departure: AddressItem,
         destination: AddressItem,
     )
 }

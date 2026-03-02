@@ -3,8 +3,7 @@ package template.ui.search
 import template.core.address.search.api.AddressItem
 
 data class SearchViewState(
-    val departureMode: DepartureMode = DepartureMode.Loading,
-    val activeField: SearchField = SearchField.Destination,
+    val activeField: SearchField = SearchField.Departure,
     val departureQuery: String = "",
     val departureSelection: AddressItem? = null,
     val destinationQuery: String = "",

@@ -21,7 +21,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
-import template.core.map.route.api.Location
+import template.core.common.Location
 import template.core.map.route.api.Route
 import template.ui.common.resources.Res
 import template.ui.common.resources.back_button

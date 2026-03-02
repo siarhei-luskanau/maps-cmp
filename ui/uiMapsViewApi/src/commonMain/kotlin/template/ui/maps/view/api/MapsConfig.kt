@@ -1,6 +1,6 @@
 package template.ui.maps.view.api
 
-import template.core.map.route.api.Location
+import template.core.common.Location
 import template.core.map.route.api.Route
 
 data class MapsConfig(

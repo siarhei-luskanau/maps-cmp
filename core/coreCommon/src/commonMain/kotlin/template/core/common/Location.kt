@@ -1,4 +1,4 @@
-package template.core.map.route.api
+package template.core.common
 
 data class Location(
     val lat: Double,

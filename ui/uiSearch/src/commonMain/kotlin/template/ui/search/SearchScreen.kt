@@ -47,37 +47,16 @@ internal fun SearchContent(
                     .padding(contentPadding)
                     .padding(horizontal = 16.dp),
         ) {
-            when (val mode = viewState.departureMode) {
-                DepartureMode.Loading -> {
-                    CircularProgressIndicator(modifier = Modifier.padding(top = 16.dp))
-                }
-
-                DepartureMode.CurrentLocation -> {
-                    OutlinedTextField(
-                        value = "Current Location",
-                        onValueChange = {},
-                        label = { Text("Departure") },
-                        enabled = false,
-                        modifier =
-                            Modifier
-                                .fillMaxWidth()
-                                .padding(top = 8.dp),
-                    )
-                }
-
-                DepartureMode.ManualEntry -> {
-                    OutlinedTextField(
-                        value = viewState.departureQuery,
-                        onValueChange = { onEvent(SearchViewEvent.QueryChanged(SearchField.Departure, it)) },
-                        label = { Text("Departure") },
-                        modifier =
-                            Modifier
-                                .fillMaxWidth()
-                                .padding(top = 8.dp)
-                                .clickable { onEvent(SearchViewEvent.FieldFocused(SearchField.Departure)) },
-                    )
-                }
-            }
+            OutlinedTextField(
+                value = viewState.departureQuery,
+                onValueChange = { onEvent(SearchViewEvent.QueryChanged(SearchField.Departure, it)) },
+                label = { Text("Departure") },
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(top = 8.dp)
+                        .clickable { onEvent(SearchViewEvent.FieldFocused(SearchField.Departure)) },
+            )
             OutlinedTextField(
                 value = viewState.destinationQuery,
                 onValueChange = { onEvent(SearchViewEvent.QueryChanged(SearchField.Destination, it)) },
@@ -118,8 +97,8 @@ internal fun SearchScreenPreview() =
             viewStateFlow =
                 MutableStateFlow(
                     SearchViewState(
-                        departureMode = DepartureMode.CurrentLocation,
-                        activeField = SearchField.Destination,
+                        activeField = SearchField.Departure,
+                        departureQuery = "Hamburg",
                         destinationQuery = "Berlin",
                         results =
                             listOf(

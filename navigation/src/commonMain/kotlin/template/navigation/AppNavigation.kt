@@ -22,13 +22,13 @@ internal class AppNavigation(
     }
 
     override fun goMapRoute(
-        departure: AddressItem?,
+        departure: AddressItem,
         destination: AddressItem,
     ) {
         backStack.add(
             AppRoutes.MapRoute(
-                departureLat = departure?.lat,
-                departureLon = departure?.lon,
+                departureLat = departure.lat,
+                departureLon = departure.lon,
                 destinationLat = destination.lat,
                 destinationLon = destination.lon,
             ),
