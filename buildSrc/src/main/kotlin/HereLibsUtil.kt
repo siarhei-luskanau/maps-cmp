@@ -77,6 +77,34 @@ fun checkAndExtractHereLibs(rootProject: Project) {
                 rename { "heresdk-explore-mock.jar" }
             }
         }
+
+        val examplesZipSrc =
+            rootProject.file(
+                "libs/heresdk-explore-android/heresdk-explore-android-$SDK_VERSION/" +
+                    "heresdk-explore-android-examples-${SDK_VERSION.substringBeforeLast(".")}.zip",
+            )
+        if (examplesZipSrc.exists()) {
+            println("Extracting $examplesZipSrc to ${examplesZipSrc.parentFile}")
+            rootProject.copy {
+                from(rootProject.zipTree(examplesZipSrc))
+                into(examplesZipSrc.path.removeSuffix(".zip"))
+            }
+        }
+
+        val examplesLibsDir =
+            rootProject.file(
+                "libs/heresdk-explore-android/heresdk-explore-android-$SDK_VERSION/" +
+                    "heresdk-explore-android-examples-${SDK_VERSION.substringBeforeLast(".")}/" +
+                    "HelloMapKotlinJC/app/libs",
+            )
+        if (examplesLibsDir.exists()) {
+            println("Copying *.aar from $examplesLibsDir to $androidSdkDir")
+            rootProject.copy {
+                from(examplesLibsDir)
+                into(androidSdkDir)
+                include("*.aar")
+            }
+        }
     }
 
     val iosSdkDir = rootProject.file("libs/heresdk-explore-ios")
