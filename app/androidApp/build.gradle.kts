@@ -63,10 +63,6 @@ kotlin {
             .get()
             .toInt(),
     )
-
-    compilerOptions {
-        freeCompilerArgs.add("-Xexplicit-backing-fields")
-    }
 }
 
 dependencies {
