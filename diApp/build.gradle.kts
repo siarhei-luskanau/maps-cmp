@@ -8,7 +8,7 @@ plugins {
 }
 
 kotlin {
-    androidLibrary.namespace = "template.di.app"
+    android.namespace = "template.di.app"
 
     targets
         .withType<KotlinNativeTarget>()
@@ -45,16 +45,8 @@ kotlin {
             }
         }
 
-        jvmMain.dependencies {
-            implementation(libs.androidx.datastore.core.okio)
-        }
-
         jvmTest.dependencies {
             implementation(libs.roborazzi.compose.desktop)
-        }
-
-        androidMain.dependencies {
-            implementation(libs.androidx.datastore.core.okio)
         }
 
         androidHostTest.dependencies {
@@ -65,7 +57,6 @@ kotlin {
 
         iosMain.dependencies {
             api(projects.core.coreHereSdk)
-            implementation(libs.androidx.datastore.core.okio)
         }
 
         iosTest.dependencies {
