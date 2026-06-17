@@ -4,7 +4,7 @@ plugins {
 }
 
 kotlin {
-    androidLibrary.namespace = "template.ui.error"
+    android.namespace = "template.ui.error"
     sourceSets {
         commonMain.dependencies {
             implementation(projects.ui.uiCommon)

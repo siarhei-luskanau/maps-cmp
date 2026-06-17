@@ -1,4 +1,4 @@
-package template.di
+package template.core.pref
 
 import kotlinx.cinterop.ExperimentalForeignApi
 import okio.Path
@@ -7,7 +7,6 @@ import org.koin.core.annotation.Single
 import platform.Foundation.NSDocumentDirectory
 import platform.Foundation.NSFileManager
 import platform.Foundation.NSUserDomainMask
-import template.core.pref.PrefPathProvider
 
 @Single
 internal class AppPrefPathProviderIos : PrefPathProvider {

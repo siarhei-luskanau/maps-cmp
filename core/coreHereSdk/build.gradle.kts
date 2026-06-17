@@ -6,7 +6,7 @@ plugins {
 }
 
 kotlin {
-    androidLibrary.namespace = "template.core.heresdk"
+    android.namespace = "template.core.heresdk"
 
     iosArm64 {
         compilations.getByName("main").cinterops.create("heresdk") {
@@ -59,7 +59,7 @@ kotlin {
 }
 
 buildConfig {
-    packageName(kotlin.androidLibrary.namespace.orEmpty())
+    packageName(kotlin.android.namespace.orEmpty())
     useKotlinOutput {
         internalVisibility = false
     }

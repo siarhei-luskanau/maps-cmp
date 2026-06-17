@@ -1,21 +1,19 @@
-package template.di
+package template.core.pref
 
-import android.content.Context
 import kotlinx.coroutines.runBlocking
 import okio.Path
 import okio.Path.Companion.toPath
 import org.koin.core.annotation.Single
 import template.core.common.DispatcherSet
-import template.core.pref.PrefPathProvider
+import java.io.File
 
 @Single
-internal class AppPrefPathProviderAndroid(
-    private val context: Context,
+internal class AppPrefPathProviderJvm(
     private val dispatcherSet: DispatcherSet,
 ) : PrefPathProvider {
     override fun get(): Path =
         runBlocking(dispatcherSet.ioDispatcher()) {
-            val file = context.filesDir.resolve("app.pref.json")
+            val file = File.createTempFile("temp_", "app.pref.json")
             file.absolutePath.toPath()
         }
 }

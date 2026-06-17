@@ -4,7 +4,7 @@ plugins {
 }
 
 kotlin {
-    androidLibrary.namespace = "template.ui.map.route"
+    android.namespace = "template.ui.map.route"
     sourceSets {
         commonMain.dependencies {
             implementation(projects.core.coreCommon)
