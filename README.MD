@@ -1,5 +1,10 @@
 # compose-multiplatform-template
 
+### Demos
+| Android | iOS |
+| :---: | :---: |
+| [android.mp4](android.mp4) | [ios.mp4](ios.mp4) |
+
 ### Set your HERE SDK credentials
 Add the following lines to `local.properties` file:
 `hereAccessKeyID=...
