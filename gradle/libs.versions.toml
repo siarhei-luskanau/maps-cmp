@@ -1,13 +1,13 @@
 [versions]
-agp = "9.2.1"
+agp = "9.3.2"
 androidx-activity = "1.13.0"
 androidx-datastore = "1.2.1"
-androidx-uiTest = "1.11.2"
+androidx-uiTest = "1.12.0"
 build-android-compileSdk = "37"
 build-android-minSdk = "30"
 build-android-targetSdk = "37"
 buildConfig = "6.0.10"
-compose-multiplatform = "1.12.0-rc01"
+compose-multiplatform = "1.12.0"
 detekt = "1.23.8"
 javaVersion = "21"
 jetbrains-compose-material3 = "1.12.0-alpha03"
@@ -23,7 +23,7 @@ kotlinx-serialization = "1.11.0"
 ktlint = "1.8.0"
 leakcanary = "2.14"
 robolectric = "4.16.1"
-roborazzi = "1.72.0"
+roborazzi = "1.73.0"
 
 [libraries]
 android-tools-gradle = { module = "com.android.tools.build:gradle", version.ref = "agp" }
