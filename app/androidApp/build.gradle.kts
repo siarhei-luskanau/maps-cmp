@@ -11,6 +11,10 @@ android {
         libs.versions.build.android.compileSdk
             .get()
             .toInt()
+    compileSdkMinor =
+        libs.versions.build.android.compileSdkMinor
+            .get()
+            .toInt()
     defaultConfig {
         minSdk =
             libs.versions.build.android.minSdk
