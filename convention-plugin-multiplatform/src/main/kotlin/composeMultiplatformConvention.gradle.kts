@@ -19,10 +19,19 @@ kotlin {
     )
 
     android {
-        compileSdk =
-            libs.versions.build.android.compileSdk
-                .get()
-                .toInt()
+        compileSdk {
+            version =
+                release(
+                    libs.versions.build.android.compileSdk
+                        .get()
+                        .toInt(),
+                ) {
+                    minorApiLevel =
+                        libs.versions.build.android.compileSdkMinor
+                            .get()
+                            .toInt()
+                }
+        }
         minSdk =
             libs.versions.build.android.minSdk
                 .get()
